@@ -450,7 +450,7 @@ $.extend(Controller, {
         });
     },
     setDefaultStartEndPos: function() {
-        this.setStartPos(1, 1);
+        this.setStartPos(2, 2);
         this.setEndPos(14, 14);
     },
     setStartPos: function(gridX, gridY) {

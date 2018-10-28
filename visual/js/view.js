@@ -3,7 +3,7 @@
  * It uses raphael.js to show the grids.
  */
 var View = {
-    nodeSize: 40, // width and height of a single node, in pixel
+    nodeSize: 50, // width and height of a single node, in pixel
     nodeStyle: {
         normal: {
             fill: 'white',
@@ -79,7 +79,7 @@ var View = {
         paper.setSize(numCols * nodeSize, numRows * nodeSize);
 
         createRowTask = function(rowId) {
-            return function(done) {
+            return function(done) {               
                 rects[rowId] = [];
                 for (j = 0; j < numCols; ++j) {
                     x = j * nodeSize;
@@ -105,7 +105,7 @@ var View = {
 
         tasks = [];
         for (i = 0; i < numRows; ++i) {
-            tasks.push(createRowTask(i));
+            tasks.push(createRowTask(i + 1));
             tasks.push(sleep);
         }
 
