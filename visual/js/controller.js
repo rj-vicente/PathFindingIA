@@ -374,10 +374,14 @@ $.extend(Controller, {
         this.grid = new PF.Grid(this.gridSize[0], this.gridSize[1]);
     },
     mousedown: function (event) {
-        var coord = View.toGridCoordinate(event.pageX, event.pageY),
+        var coord = View.toGridCoordinate(event.pageX-40, event.pageY-40),
             gridX = coord[0],
             gridY = coord[1],
             grid  = this.grid;
+            console.log(event);
+            console.log(event.pageX);
+            console.log(event.pageY);
+            console.log(coord);
 
         if (this.can('dragStart') && this.isStartPos(gridX, gridY)) {
             this.dragStart();
@@ -396,7 +400,7 @@ $.extend(Controller, {
         }
     },
     mousemove: function(event) {
-        var coord = View.toGridCoordinate(event.pageX, event.pageY),
+        var coord = View.toGridCoordinate(event.pageX-40, event.pageY-40),
             grid = this.grid,
             gridX = coord[0],
             gridY = coord[1];

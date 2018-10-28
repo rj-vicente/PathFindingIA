@@ -200,6 +200,8 @@ var View = {
         if (value) {
             // clear blocked node
             if (node) {
+                console.log(gridY);
+                console.log(gridX);
                 this.colorizeNode(node, this.rects[gridY][gridX].attr('fill'));
                 this.zoomNode(node);
                 setTimeout(function() {
