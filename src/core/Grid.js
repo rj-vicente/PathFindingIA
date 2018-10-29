@@ -57,7 +57,6 @@ Grid.prototype._buildNodes = function(width, height, matrix) {
         }
     }
 
-
     if (matrix === undefined) {
         return nodes;
     }

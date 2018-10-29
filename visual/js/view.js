@@ -3,7 +3,7 @@
  * It uses raphael.js to show the grids.
  */
 var View = {
-    nodeSize: 50, // width and height of a single node, in pixel
+    nodeSize: 40, // width and height of a single node, in pixel
     nodeStyle: {
         normal: {
             fill: 'white',
@@ -54,7 +54,7 @@ var View = {
     init: function(opts) {
         this.numCols      = opts.numCols;
         this.numRows      = opts.numRows;
-        this.paper        = Raphael('draw_area');
+        this.paper        = Raphael('draw_area', 650, 650);
         this.$stats       = $('#stats');
     },
     /**
@@ -75,17 +75,14 @@ var View = {
             paper       = this.paper,
             rects       = this.rects = [],
             $stats      = this.$stats;
-
-        paper.setSize(numCols * nodeSize, numRows * nodeSize);
-
-        createRowTask = function(rowId) {
-            return function(done) {               
+         paper.setSize(numCols * nodeSize, numRows * nodeSize);
+         createRowTask = function(rowId) {
+            return function(done) {
                 rects[rowId] = [];
                 for (j = 0; j < numCols; ++j) {
                     x = j * nodeSize;
                     y = rowId * nodeSize;
-
-                    rect = paper.rect(x, y, nodeSize, nodeSize);
+                     rect = paper.rect(x, y, nodeSize, nodeSize);
                     rect.attr(normalStyle);
                     rects[rowId].push(rect);
                 }
@@ -96,20 +93,17 @@ var View = {
                 done(null);
             };
         };
-
-        sleep = function(done) {
+         sleep = function(done) {
             setTimeout(function() {
                 done(null);
             }, 0);
         };
-
-        tasks = [];
+         tasks = [];
         for (i = 0; i < numRows; ++i) {
-            tasks.push(createRowTask(i + 1));
+            tasks.push(createRowTask(i));
             tasks.push(sleep);
         }
-
-        async.series(tasks, function() {
+         async.series(tasks, function() {
             if (callback) {
                 callback();
             }
@@ -163,8 +157,7 @@ var View = {
             break;
         case 'tested':
             color = (value === true) ? nodeStyle.tested.fill : nodeStyle.normal.fill;
-
-            this.colorizeNode(this.rects[gridY][gridX], color);
+             this.colorizeNode(this.rects[gridY][gridX], color);
             this.setCoordDirty(gridX, gridY, true);
             break;
         case 'parent':
@@ -200,8 +193,6 @@ var View = {
         if (value) {
             // clear blocked node
             if (node) {
-                console.log(gridY);
-                console.log(gridX);
                 this.colorizeNode(node, this.rects[gridY][gridX].attr('fill'));
                 this.zoomNode(node);
                 setTimeout(function() {
@@ -255,15 +246,13 @@ var View = {
      */
     buildSvgPath: function(path) {
         var i, strs = [], size = this.nodeSize;
-
-        strs.push('M' + (path[0][0] * size + size / 2) + ' ' +
+         strs.push('M' + (path[0][0] * size + size / 2) + ' ' +
                   (path[0][1] * size + size / 2));
         for (i = 1; i < path.length; ++i) {
             strs.push('L' + (path[i][0] * size + size / 2) + ' ' +
                       (path[i][1] * size + size / 2));
         }
-
-        return strs.join('');
+         return strs.join('');
     },
     clearPath: function() {
         if (this.path) {
@@ -301,8 +290,7 @@ var View = {
             numRows = this.numRows,
             numCols = this.numCols,
             coordDirty;
-
-        if (this.coordDirty === undefined) {
+         if (this.coordDirty === undefined) {
             coordDirty = this.coordDirty = [];
             for (y = 0; y < numRows; ++y) {
                 coordDirty.push([]);
@@ -311,8 +299,7 @@ var View = {
                 }
             }
         }
-
-        this.coordDirty[gridY][gridX] = isDirty;
+         this.coordDirty[gridY][gridX] = isDirty;
     },
     getDirtyCoords: function() {
         var x, y,
@@ -320,12 +307,10 @@ var View = {
             numCols = this.numCols,
             coordDirty = this.coordDirty,
             coords = [];
-
-        if (coordDirty === undefined) {
+         if (coordDirty === undefined) {
             return [];
         }
-
-        for (y = 0; y < numRows; ++y) {
+         for (y = 0; y < numRows; ++y) {
             for (x = 0; x < numCols; ++x) {
                 if (coordDirty[y][x]) {
                     coords.push([x, y]);
