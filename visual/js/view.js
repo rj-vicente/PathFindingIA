@@ -281,7 +281,8 @@ var View = {
         var texts = [
             'Longitud: ' + Math.round(opts.pathLength * 100) / 100,
             'Tiempo: ' + opts.timeSpent + 'ms',
-            'Operaciones: ' + opts.operationCount
+            'Operaciones: ' + opts.operationCount,
+            'Camino: ' + opts.path,
         ];
         $('#stats').show().html(texts.join('<br>'));
     },

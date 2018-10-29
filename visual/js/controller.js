@@ -176,6 +176,7 @@ $.extend(Controller, {
             pathLength: PF.Util.pathLength(this.path),
             timeSpent: this.timeSpent,
             operationCount: this.operationCount,
+            path: this.stringifyPath(),
         });
         View.drawPath(this.path);
         // => finished
@@ -264,11 +265,11 @@ $.extend(Controller, {
             text: "Finalizado",
             enabled: false,
         }, {
-                id: 2,
-                text: 'Reiniciar',
-                enabled: true,
-                callback: $.proxy(this.clear, this),
-            });
+            id: 2,
+            text: 'Reiniciar',
+            enabled: true,
+            callback: $.proxy(this.clear, this),
+        });
     },
     onmodified: function () {
         console.log('=> modified');
@@ -644,9 +645,18 @@ $.extend(Controller, {
     clearLists: function() {
         openedList = [];
         closedList = [];
+    },
+    stringifyPath: function() {
+        pathLength = PF.Util.pathLength(this.path);
+        strPath = "";
+        for(var i = 0; i < pathLength; i++) {
+            node = this.path[i];
+            if (node[0] == this.endX && node[1] == this.endY) break;
+            strPath += `${this.numberToCoord(node[0],node[1])} → `;
+        }
+        return strPath += `${this.numberToCoord(this.endX,this.endY)}`;
     }
-    
-    // op -> if(op._opened) -> list.find(op) -> list.push(op) -> orderby(f) -> stringify(list) -> append()'s {next line}
+
 });
 
 
