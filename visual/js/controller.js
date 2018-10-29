@@ -500,7 +500,6 @@ $.extend(Controller, {
     isStartOrEndPos: function (gridX, gridY) {
         return this.isStartPos(gridX, gridY) || this.isEndPos(gridX, gridY);
     },
-
     addTableRow: function (op) {
         var table = document.getElementById("step_table");
         var row = table.insertRow(-1);
@@ -519,6 +518,11 @@ $.extend(Controller, {
         cell1.innerHTML = `prueba`; 
         cell2.innerHTML = `${op.x}${op.y} (h, parent)`; // printeo abiertos
         cell3.innerHTML = ``; // prineto cerrados
+    },
+    numberToCoord: function (x,y) {
+        if (!x) return "Ø";
+        var alph = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P"];
+        return `${alph[x]}${y + 1}`;
     }
 });
 
