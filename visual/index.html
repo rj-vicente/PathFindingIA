@@ -1,146 +1,190 @@
 <!DOCTYPE HTML>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <title>IA - 5k2 - Donato, Alexis, Vicente - Adaptado de PathFinding.js</title>
 
-    <link rel="stylesheet" href="./css/style.css" />
-    <link rel="stylesheet" href="./lib/themes/jquery.ui.all.css" />
+<head>
+  <style>
+    table {
+      font-family: arial, sans-serif;
+      border-collapse: collapse;
+      width: 100%;
+      }
+         
+      td, th {
+      border: 1px solid #dddddd;
+      text-align: left;
+      padding: 8px;
+      }
+          
+      tr:nth-child(even) {
+      background-color: #dddddd;
+      }
+  </style>
+  <meta charset="UTF-8">
+  <title>IA - 5k2 - Donato, Alexis, Vicente - Adaptado de PathFinding.js</title>
 
-    <script type="text/javascript" src="./lib/raphael-min.js"></script>
-    <script type="text/javascript" src="./lib/es5-shim.min.js"></script>
-    <script type="text/javascript" src="./lib/jquery-1.7.2.min.js"></script>
-    <script type="text/javascript" src="./lib/state-machine.min.js"></script>
-    <script type="text/javascript" src="./lib/async.min.js"></script>
+  <link rel="stylesheet" href="./css/style.css" />
+  <link rel="stylesheet" href="./lib/themes/jquery.ui.all.css" />
 
-    <script type="text/javascript" src="./lib/ui/jquery.ui.core.min.js"></script>
-    <script type="text/javascript" src="./lib/ui/jquery.ui.widget.min.js"></script>
-    <script type="text/javascript" src="./lib/ui/jquery.ui.mouse.min.js"></script>
-    <script type="text/javascript" src="./lib/ui/jquery.ui.draggable.min.js"></script>
-    <script type="text/javascript" src="./lib/ui/jquery.ui.accordion.min.js"></script>
-    <script type="text/javascript" src="./lib/ui/jquery.ui.slider.min.js"></script>
+  <script type="text/javascript" src="./lib/raphael-min.js"></script>
+  <script type="text/javascript" src="./lib/es5-shim.min.js"></script>
+  <script type="text/javascript" src="./lib/jquery-1.7.2.min.js"></script>
+  <script type="text/javascript" src="./lib/state-machine.min.js"></script>
+  <script type="text/javascript" src="./lib/async.min.js"></script>
 
-    <script type="text/javascript" src="./lib/pathfinding-browser.min.js"></script>
+  <script type="text/javascript" src="./lib/ui/jquery.ui.core.min.js"></script>
+  <script type="text/javascript" src="./lib/ui/jquery.ui.widget.min.js"></script>
+  <script type="text/javascript" src="./lib/ui/jquery.ui.mouse.min.js"></script>
+  <script type="text/javascript" src="./lib/ui/jquery.ui.draggable.min.js"></script>
+  <script type="text/javascript" src="./lib/ui/jquery.ui.accordion.min.js"></script>
+  <script type="text/javascript" src="./lib/ui/jquery.ui.slider.min.js"></script>
 
-    <script type="text/javascript" src="./js/view.js"></script>
-    <script type="text/javascript" src="./js/controller.js"></script>
-    <script type="text/javascript" src="./js/panel.js"></script>
-    <script type="text/javascript" src="./js/main.js"></script>
-  </head>
-  <body>
-    <div class="Img"></div>
-    <div>
-      <img src="file:///C:\Users\usuario\Desktop\PathFinding.js-master\src\assets\topbar.png" alt="Coordenadas no cargadas" style="position:absolute; top: 0">
-      <img src="file:///C:\Users\usuario\Desktop\PathFinding.js-master\src\assets\leftbar.png" alt="Coordenadas no cargadas" style="position:absolute">
+  <script type="text/javascript" src="./lib/pathfinding-browser.min.js"></script>
+
+  <script type="text/javascript" src="./js/view.js"></script>
+  <script type="text/javascript" src="./js/controller.js"></script>
+  <script type="text/javascript" src="./js/panel.js"></script>
+  <script type="text/javascript" src="./js/main.js"></script>
+</head>
+
+<body>
+  <div class="Img"></div>
+  <div style="display: flex;">
+    <div style="display: grid;">
+      <img src="file:///C:\Users\Alexis\Documents\Repositories\IA\iabueno\PathFindingIA\src\assets\topbar.png" alt="Coordenadas no cargadas"
+        style="position:absolute; top: 0">
+      <img src="file:///C:\Users\Alexis\Documents\Repositories\IA\iabueno\PathFindingIA\src\assets\leftbar.png" alt="Coordenadas no cargadas"
+        style="position:absolute; top:40px">
       <div id="draw_area" style="margin-left:40px; margin-top: 40px; width: 650px; height: 650px"></div>
     </div>
-    <div id="instructions_panel" class="panel">
-      <header>
-        <h2 class="header_title">Instrucciones</h2>
-        <span id="hide_instructions">Ocultar</span>
-      </header>
-      Hacé click en la grilla o arrastrá para dibujar obstáculos. <br>
-      Mové el nodo <span class="green">VERDE</span> para definir posición inicial. <br>
-      Mové el nodo <span class="red">ROJO</span> para definir posición final. <br>
-      Elegí un algoritmo en el panel a la derecha.
+
+    <div style="display: block;width: calc(30vw); max-height: calc(80vh); overflow-y: auto">
+      <table id="step_table" #step_table>
+        <tr>
+          <th>Paso</th>
+          <th>Abiertos</th>
+          <th>Cerrados</th>
+        </tr>
+        <tr>
+          <td>0</td>
+          <td>prueba</td>
+          <td>prueba</td>
+        </tr>
+      </table>
+      <br>
     </div>
 
-    <div id="algorithm_panel" class="panel right_panel">
-      <header><h2 class="header_title">Algoritmos</h2></header>
+  </div>
 
-      <div class="accordion">
-        <h3 id="astar_header"><a href="#">Búsqueda A*</a></h3>
-        <div id="astar_section" class="finder_section">
-          <header class="option_header">
-            <h3>Heurística</h3>
-          </header>
-          <div id="astar_heuristic" class="sub_options">
-            <input type="radio" name="astar_heuristic" value="manhattan" checked />
-            <label class="option_label">Distancia Manhattan</label> <br>
-            <input type="radio" name="astar_heuristic" value="euclidean"/>
-            <label class="option_label">Distancia Euclidiana</label> <br>
-            <input type="radio" name="astar_heuristic" value="octile"/>
-            <label class="option_label">Distancia Octil</label> <br>
-            <input type="radio" name="astar_heuristic" value="chebyshev"/>
-            <label class="option_label">Distancia Chebyshev</label> <br>
-          </div>
+  <div id="instructions_panel" class="panel">
+    <header>
+      <h2 class="header_title">Instrucciones</h2>
+      <span id="hide_instructions">Ocultar</span>
+    </header>
+    Hacé click en la grilla o arrastrá para dibujar obstáculos. <br>
+    Mové el nodo <span class="green">VERDE</span> para definir posición inicial. <br>
+    Mové el nodo <span class="red">ROJO</span> para definir posición final. <br>
+    Elegí un algoritmo en el panel a la derecha.
+  </div>
 
-          <header class="option_header">
-            <h3>Opciones</h3>
-          </header>
-          <div class="optional sub_options">
-            <input type="checkbox" class="allow_diagonal" checked>
-            <label class="option_label">Movimiento Diagonal</label> <br>
-            <input type="checkbox" class="dont_cross_corners">
-            <label class="option_label">Cruzar Esquinas</label> <br>
-            <input class="spinner" name="astar_weight" value="1">
-            <label class="option_label">Peso</label> <br>
-          </div>
+  <div id="algorithm_panel" class="panel right_panel">
+    <header>
+      <h2 class="header_title">Algoritmos</h2>
+    </header>
+
+    <div class="accordion">
+      <h3 id="astar_header"><a href="#">Búsqueda A*</a></h3>
+      <div id="astar_section" class="finder_section">
+        <header class="option_header">
+          <h3>Heurística</h3>
+        </header>
+        <div id="astar_heuristic" class="sub_options">
+          <input type="radio" name="astar_heuristic" value="manhattan" checked />
+          <label class="option_label">Distancia Manhattan</label> <br>
+          <input type="radio" name="astar_heuristic" value="euclidean" />
+          <label class="option_label">Distancia Euclidiana</label> <br>
+          <input type="radio" name="astar_heuristic" value="octile" />
+          <label class="option_label">Distancia Octil</label> <br>
+          <input type="radio" name="astar_heuristic" value="chebyshev" />
+          <label class="option_label">Distancia Chebyshev</label> <br>
         </div>
 
-        <h3 id="breadthfirst_header"><a href="#">Búsqueda en Anchura</a></h3>
-        <div id="breadthfirst_section" class="finder_section">
-          <header class="option_header">
-            <h3>Opciones</h3>
-          </header>
-          <div class="optional sub_options">
-            <input type="checkbox" class="allow_diagonal" checked>
-            <label class="option_label">Movimiento Diagonal</label> <br>
-            <input type="checkbox" class="dont_cross_corners">
-            <label class="option_label">Cruzar Esquinas</label> <br>
-          </div>
+        <header class="option_header">
+          <h3>Opciones</h3>
+        </header>
+        <div class="optional sub_options">
+          <input type="checkbox" class="allow_diagonal" checked>
+          <label class="option_label">Movimiento Diagonal</label> <br>
+          <input type="checkbox" class="dont_cross_corners">
+          <label class="option_label">Cruzar Esquinas</label> <br>
+          <input class="spinner" name="astar_weight" value="1">
+          <label class="option_label">Peso</label> <br>
+        </div>
+      </div>
+
+      <h3 id="breadthfirst_header"><a href="#">Búsqueda en Anchura</a></h3>
+      <div id="breadthfirst_section" class="finder_section">
+        <header class="option_header">
+          <h3>Opciones</h3>
+        </header>
+        <div class="optional sub_options">
+          <input type="checkbox" class="allow_diagonal" checked>
+          <label class="option_label">Movimiento Diagonal</label> <br>
+          <input type="checkbox" class="dont_cross_corners">
+          <label class="option_label">Cruzar Esquinas</label> <br>
+        </div>
+      </div>
+
+      <h3 id="bestfirst_header"><a href="#">Búsqueda Primero el Mejor</a></h3>
+      <div id="bestfirst_section" class="finder_section">
+        <header class="option_header">
+          <h3>Heurística</h3>
+        </header>
+        <div id="bestfirst_heuristic" class="sub_options">
+          <input type="radio" name="bestfirst_heuristic" value="manhattan" checked />
+          <label class="option_label">Distancia Manhattan</label> <br>
+          <input type="radio" name="bestfirst_heuristic" value="euclidean" />
+          <label class="option_label">Distancia Euclidiana</label> <br>
+          <input type="radio" name="bestfirst_heuristic" value="octile" />
+          <label class="option_label">Distancia Octil</label> <br>
+          <input type="radio" name="bestfirst_heuristic" value="chebyshev" />
+          <label class="option_label">Distancia Chebyshev</label> <br>
         </div>
 
-        <h3 id="bestfirst_header"><a href="#">Búsqueda Primero el Mejor</a></h3>
-        <div id="bestfirst_section" class="finder_section">
-          <header class="option_header">
-            <h3>Heurística</h3>
-          </header>
-          <div id="bestfirst_heuristic" class="sub_options">
-            <input type="radio" name="bestfirst_heuristic" value="manhattan" checked />
-            <label class="option_label">Distancia Manhattan</label> <br>
-            <input type="radio" name="bestfirst_heuristic" value="euclidean"/>
-            <label class="option_label">Distancia Euclidiana</label> <br>
-            <input type="radio" name="bestfirst_heuristic" value="octile"/>
-            <label class="option_label">Distancia Octil</label> <br>
-            <input type="radio" name="bestfirst_heuristic" value="chebyshev"/>
-            <label class="option_label">Distancia Chebyshev</label> <br>
-          </div>
-
-          <header class="option_header">
-            <h3>Opciones</h3>
-          </header>
-          <div class="optional sub_options">
-            <input type="checkbox" class="allow_diagonal" checked>
-            <label class="option_label">Movimiento Diagonal</label> <br>
-            <input type="checkbox" class="dont_cross_corners">
-            <label class="option_label">Cruzar Esquinas</label> <br>
-          </div>
+        <header class="option_header">
+          <h3>Opciones</h3>
+        </header>
+        <div class="optional sub_options">
+          <input type="checkbox" class="allow_diagonal" checked>
+          <label class="option_label">Movimiento Diagonal</label> <br>
+          <input type="checkbox" class="dont_cross_corners">
+          <label class="option_label">Cruzar Esquinas</label> <br>
         </div>
+      </div>
 
-        <h3 id="depthfirst_header"><a href="#">Búsqueda en Profundidad</a></h3>
-        <div id="depthfirst_section" class="finder_section">
-          <header class="option_header">
-            <h3>Opciones</h3>
-          </header>
-          <div class="optional sub_options">
-            <input type="checkbox" class="allow_diagonal" checked>
-            <label class="option_label">Movimiento Diagonal</label> <br>
-            <input type="checkbox" class="dont_cross_corners">
-            <label class="option_label">Cruzar Esquinas</label> <br>
-          </div>
+      <h3 id="depthfirst_header"><a href="#">Búsqueda en Profundidad</a></h3>
+      <div id="depthfirst_section" class="finder_section">
+        <header class="option_header">
+          <h3>Opciones</h3>
+        </header>
+        <div class="optional sub_options">
+          <input type="checkbox" class="allow_diagonal" checked>
+          <label class="option_label">Movimiento Diagonal</label> <br>
+          <input type="checkbox" class="dont_cross_corners">
+          <label class="option_label">Cruzar Esquinas</label> <br>
         </div>
+      </div>
 
-      </div><!-- .accordion -->
-    </div><!-- #algorithm_panel -->
+    </div><!-- .accordion -->
+  </div><!-- #algorithm_panel -->
 
-    <div id="play_panel" class="panel right_panel">
-      <button id="button1" class="control_button">Comenzar</button>
-      <button id="button2" class="control_button">Reiniciar</button>
-      <button id="button3" class="control_button">Limpiar</button>
-    </div>
+  <div id="play_panel" class="panel right_panel">
+    <button id="button1" class="control_button">Comenzar</button>
+    <button id="button2" class="control_button">Reiniciar</button>
+    <button id="button3" class="control_button">Limpiar</button>
+  </div>
 
-    <div id="stats"></div>
+  <div id="stats"></div>
 
-  </body>
+</body>
+
 </html>
