@@ -4,6 +4,7 @@
  * See https://github.com/jakesgordon/javascript-state-machine
  * for the document of the StateMachine module.
  */
+var stepNumber = 0;
 var Controller = StateMachine.create({
     initial: 'none',
     events: [
@@ -506,18 +507,30 @@ $.extend(Controller, {
         var cell1 = row.insertCell(0);
         var cell2 = row.insertCell(1);
         var cell3 = row.insertCell(2);
-        switch (op.attr) {
-            case 'opened':
-                
+        cell1.innerHTML =  stepNumber;
+        stepNumber++; 
+        var coord = this.numberToCoord(op.x,op.y);
+        var coordParent = this.numberToCoord(op.parentX, op.parentY);
+
+        if(op.f){
+            switch (op.attr) {
+                case 'opened':
+                cell2.innerHTML = `${coord} ( ↶ ${coordParent} , ƒ=${op.f.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0]} )`; // printeo abiertos
                 break;
-            case 'closed':
-                
+                case 'closed':
+                cell3.innerHTML = `${coord} ( ↶ ${coordParent} , ƒ=${op.f.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0]} )`; // printeo cerrado
                 break;
             }
-        
-        cell1.innerHTML = `prueba`; 
-        cell2.innerHTML = `${op.x}${op.y} (h, parent)`; // printeo abiertos
-        cell3.innerHTML = ``; // prineto cerrados
+        } else {
+            switch (op.attr) {
+                case 'opened':
+                cell2.innerHTML = `${coord} ( ↶ ${coordParent} )`; // printeo abiertos
+                break;
+                case 'closed':
+                cell3.innerHTML = `${coord} ( ↶ ${coordParent} )`; // printeo cerrado
+                break;
+            }
+        }
     },
     numberToCoord: function (x,y) {
         if (!x) return "Ø";
