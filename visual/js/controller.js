@@ -294,12 +294,9 @@ $.extend(Controller, {
     hookPathFinding: function () {
         PF.Node.prototype = {
             get opened() {
-                console.log("get opened");
-                console.log(this);
                 return this._opened;
             },
             set opened(v) {
-                console.log("set opened");
                 console.log(this);
                 this._opened = v;
                 Controller.operations.push({
@@ -313,12 +310,9 @@ $.extend(Controller, {
                 });
             },
             get closed() {
-                console.log("get closed");
-                console.log(this);
                 return this._closed;
             },
             set closed(v) {
-                console.log("set closed");
                 console.log(this);
                 this._closed = v;
                 Controller.operations.push({
@@ -367,7 +361,6 @@ $.extend(Controller, {
         var operations = this.operations,
             op, isSupported;
         
-        console.log(operations.length);
         do {
             if (!operations.length) {
                 this.finish(); // transit to `finished` state
@@ -377,25 +370,31 @@ $.extend(Controller, {
             isSupported = View.supportedOperations.indexOf(op.attr) !== -1;
         } while (!isSupported);
 
-        console.log(op);
         if (op.attr == 'opened') {
             this.addOpened(op);
         } else if (op.attr == 'closed') {
             this.addClosed(op);
         }
         
-        textList.push(op);
-        xCoord = (op.x + 1) * 40 + 5;
-        yCoord = (op.y + 1) * 40 + 5;
-        var textElem = document.createElement('p');
-        var textNode = document.createTextNode(op.f.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0])
-        textElem.setAttribute("id", "x" + op.x + "y" + op.y);
-        textElem.appendChild(textNode);
-        document.body.appendChild(textElem);
-        textElem.style.position = 'absolute';
-        textElem.style.left = xCoord + 'px';
-        textElem.style.top = yCoord + 'px';
-
+        if (op.f) {
+            textList.push(op);
+            xCoord = (op.x + 1) * 40;
+            yCoord = (op.y + 1) * 40;
+            var textElem = document.createElement('p');
+            var textNode = document.createTextNode(op.f.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0])
+            textElem.setAttribute("id", "x" + op.x + "y" + op.y);
+            textElem.appendChild(textNode);
+            document.body.appendChild(textElem);
+            textElem.style.position = 'absolute';
+            textElem.style.left = xCoord + 'px';
+            textElem.style.top = yCoord + 'px';
+            textElem.style.fontSize = '0.8em';
+            textElem.style.width = '40px';
+            textElem.style.height = '40px';
+            textElem.style.textAlign = 'center';
+            textElem.style.verticalAlign = 'center';
+        }
+        
         View.setAttributeAt(op.x, op.y, op.attr, op.value);
     },
     clearOperations: function () {
@@ -531,37 +530,6 @@ $.extend(Controller, {
     isStartOrEndPos: function (gridX, gridY) {
         return this.isStartPos(gridX, gridY) || this.isEndPos(gridX, gridY);
     },
-    /*addTableRow: function (op) {
-        var table = document.getElementById("step_table");
-        var row = table.insertRow(-1);
-        var cell1 = row.insertCell(0);
-        var cell2 = row.insertCell(1);
-        var cell3 = row.insertCell(2);
-        cell1.innerHTML =  stepNumber;
-        stepNumber++; 
-        var coord = this.numberToCoord(op.x,op.y);
-        var coordParent = this.numberToCoord(op.parentX, op.parentY);
-
-        if(op.f){
-            switch (op.attr) {
-                case 'opened':
-                cell2.innerHTML = `${coord} ( ↶ ${coordParent} , ƒ=${op.f.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0]} )`; // printeo abiertos
-                break;
-                case 'closed':
-                cell3.innerHTML = `${coord} ( ↶ ${coordParent} , ƒ=${op.f.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0]} )`; // printeo cerrado
-                break;
-            }
-        } else {
-            switch (op.attr) {
-                case 'opened':
-                cell2.innerHTML = `${coord} ( ↶ ${coordParent} )`; // printeo abiertos
-                break;
-                case 'closed':
-                cell3.innerHTML = `${coord} ( ↶ ${coordParent} )`; // printeo cerrado
-                break;
-            }
-        }
-    },*/
     numberToCoord: function (x,y) {
         if (x === undefined || x === null) return "Ø";
         var alph = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P"];
@@ -596,25 +564,6 @@ $.extend(Controller, {
         this.printTable();
     },
     stringifyOp: function(op) {
-        /*if(op.f){
-            switch (op.attr) {
-                case 'opened':
-                cell2.innerHTML = `${coord} ( ↶ ${coordParent} , ƒ=${op.f.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0]} )`; // printeo abiertos
-                break;
-                case 'closed':
-                cell3.innerHTML = `${coord} ( ↶ ${coordParent} , ƒ=${op.f.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0]} )`; // printeo cerrado
-                break;
-            }
-        } else {
-            switch (op.attr) {
-                case 'opened':
-                cell2.innerHTML = `${coord} ( ↶ ${coordParent} )`; // printeo abiertos
-                break;
-                case 'closed':
-                cell3.innerHTML = `${coord} ( ↶ ${coordParent} )`; // printeo cerrado
-                break;
-            }
-        }*/
         var coord = this.numberToCoord(op.x,op.y);
         var coordParent = this.numberToCoord(op.parentX, op.parentY);
         if(op.f){
@@ -634,14 +583,6 @@ $.extend(Controller, {
         }
     },
     printTable: function() {
-        /*var table = document.getElementById("step_table");
-        var row = table.insertRow(-1);
-        var cell1 = row.insertCell(0);
-        var cell2 = row.insertCell(1);
-        var cell3 = row.insertCell(2);
-        cell1.innerHTML =  stepNumber;
-        stepNumber++;*/
-
         var strOpened = "", strClosed = "";
         for(var i = 0; i < openedList.length; i++) {
             strOpened += `${this.stringifyOp(openedList[i])}<br>`

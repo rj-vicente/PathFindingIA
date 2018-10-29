@@ -127,3 +127,30 @@ a {
 .spinner {
     width: 2em;
 }
+
+table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+}
+         
+td {
+    border: 1px solid #dddddd;
+    text-align: center;
+    vertical-align: top;
+    padding: 8px;
+}
+
+th {
+    border: 1px solid #dddddd;
+    text-align: center;
+    vertical-align: center;
+    background-color: green;
+    color: white;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+          
+tr:nth-child(even) {
+    background-color: #ffffff;
+}

@@ -64,8 +64,10 @@ AStarFinder.prototype.findPath = function(startX, startY, endX, endY, grid) {
         node, neighbors, neighbor, i, l, x, y, ng;
 
     // set the `g` and `f` value of the start node to be 0
+    var startH = weight * heuristic(abs(startX - endX), abs(startY - endY));
     startNode.g = 0;
-    startNode.f = 0;
+    startNode.h = startH;
+    startNode.f = startH;
 
     // push the start node into the open list
     openList.push(startNode);
