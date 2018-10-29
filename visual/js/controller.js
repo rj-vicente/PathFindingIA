@@ -7,6 +7,8 @@
 var stepNumber = 0;
 var openedList = [];
 var closedList = [];
+var textList = [];
+
 var Controller = StateMachine.create({
     initial: 'none',
     events: [
@@ -381,13 +383,30 @@ $.extend(Controller, {
         } else if (op.attr == 'closed') {
             this.addClosed(op);
         }
-        //this.addTableRow(op);
+        
+        textList.push(op);
+        xCoord = (op.x + 1) * 40 + 5;
+        yCoord = (op.y + 1) * 40 + 5;
+        var textElem = document.createElement('p');
+        var textNode = document.createTextNode(op.f.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0])
+        textElem.setAttribute("id", "x" + op.x + "y" + op.y);
+        textElem.appendChild(textNode);
+        document.body.appendChild(textElem);
+        textElem.style.position = 'absolute';
+        textElem.style.left = xCoord + 'px';
+        textElem.style.top = yCoord + 'px';
+
         View.setAttributeAt(op.x, op.y, op.attr, op.value);
     },
     clearOperations: function () {
         this.operations = [];
         this.openedList = [];
         this.closedList = [];
+        for (var i = 0; i < textList.length; i++) {
+            var element = document.getElementById("x" + textList[i].x + "y" + textList[i].y);
+            element.parentNode.removeChild(element);
+        }
+        textList = [];
         stepNumber = 0;
         var table = document.getElementById("step_table");
         table.deleteRow(1);
