@@ -14,7 +14,8 @@ var gulp = require('gulp'),
     fs = require('fs');
 
 gulp.task('clean', function(cb) {
-    del('lib/**/*.*', cb);
+    del('lib/**/*.*');
+    del('./visual/lib/pathfinding-browser.min.js', cb);
 });
 
 gulp.task('browserify', ['clean'], function(cb) {
@@ -28,7 +29,7 @@ gulp.task('uglify', ['browserify'], function(cb) {
     return gulp.src('./lib/pathfinding-browserified.js')
     .pipe(uglify())
     .pipe(rename('pathfinding-browser.min.js'))
-    .pipe(gulp.dest('./lib/'), cb);
+    .pipe(gulp.dest('./visual/lib/'), cb);
 });
 
 gulp.task('scripts', ['clean', 'browserify', 'uglify'], function(cb) {

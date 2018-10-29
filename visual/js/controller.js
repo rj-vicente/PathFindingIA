@@ -134,9 +134,11 @@ $.extend(Controller, {
 
         timeStart = window.performance ? performance.now() : Date.now();
         grid = this.grid.clone();
+        console.log("FINDING PATH C=============8")
         this.path = finder.findPath(
             this.startX, this.startY, this.endX, this.endY, grid
         );
+        console.log("PATH FOUND 3=============D")
         this.operationCount = this.operations.length;
         timeEnd = window.performance ? performance.now() : Date.now();
         this.timeSpent = (timeEnd - timeStart).toFixed(4);
@@ -288,25 +290,39 @@ $.extend(Controller, {
     hookPathFinding: function() {
         PF.Node.prototype = {
             get opened() {
+                console.log("get opened");
+                console.log(this);
                 return this._opened;
             },
             set opened(v) {
+                console.log("set opened");
+                console.log(this);
                 this._opened = v;
                 Controller.operations.push({
                     x: this.x,
                     y: this.y,
+                    f: this.f,
+                    parentX: (this.parent ? this.parent.x : null),
+                    parentY: (this.parent ? this.parent.y : null),
                     attr: 'opened',
                     value: v
                 });
             },
             get closed() {
+                console.log("get closed");
+                console.log(this);
                 return this._closed;
             },
             set closed(v) {
+                console.log("set closed");
+                console.log(this);
                 this._closed = v;
                 Controller.operations.push({
                     x: this.x,
                     y: this.y,
+                    f: this.f,
+                    parentX: (this.parent ? this.parent.x : null),
+                    parentY: (this.parent ? this.parent.y : null),
                     attr: 'closed',
                     value: v
                 });
@@ -356,6 +372,8 @@ $.extend(Controller, {
             op = operations.shift();
             isSupported = View.supportedOperations.indexOf(op.attr) !== -1;
         } while (!isSupported);
+
+        console.log(op);
 
         View.setAttributeAt(op.x, op.y, op.attr, op.value);
     },
