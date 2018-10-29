@@ -306,7 +306,7 @@ $.extend(Controller, {
                     parentX: (this.parent ? this.parent.x : null),
                     parentY: (this.parent ? this.parent.y : null),
                     attr: 'opened',
-                    value: v
+                    value: v,
                 });
             },
             get closed() {
@@ -322,7 +322,7 @@ $.extend(Controller, {
                     parentX: (this.parent ? this.parent.x : null),
                     parentY: (this.parent ? this.parent.y : null),
                     attr: 'closed',
-                    value: v
+                    value: v,
                 });
             },
             get tested() {
@@ -380,6 +380,8 @@ $.extend(Controller, {
             textList.push(op);
             xCoord = (op.x + 1) * 40;
             yCoord = (op.y + 1) * 40;
+            element = document.getElementById("x" + op.x + "y" + op.y);
+            if (element) element.parentNode.removeChild(element);
             var textElem = document.createElement('p');
             var textNode = document.createTextNode(op.f.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0])
             textElem.setAttribute("id", "x" + op.x + "y" + op.y);
@@ -392,7 +394,7 @@ $.extend(Controller, {
             textElem.style.width = '40px';
             textElem.style.height = '40px';
             textElem.style.textAlign = 'center';
-            textElem.style.verticalAlign = 'center';
+            textElem.style.verticalAlign = 'middle';
         }
         
         View.setAttributeAt(op.x, op.y, op.attr, op.value);
@@ -401,13 +403,17 @@ $.extend(Controller, {
         this.operations = [];
         this.openedList = [];
         this.closedList = [];
+        console.log(textList);
         for (var i = 0; i < textList.length; i++) {
-            var element = document.getElementById("x" + textList[i].x + "y" + textList[i].y);
-            element.parentNode.removeChild(element);
+            try {
+                element = document.getElementById("x" + textList[i].x + "y" + textList[i].y);
+                element.parentNode.removeChild(element);
+            } catch (e) {}
         }
         textList = [];
         stepNumber = 0;
         var table = document.getElementById("step_table");
+        $('#stats').text("");
         table.deleteRow(1);
         table.insertRow(1);
         this.clearLists();

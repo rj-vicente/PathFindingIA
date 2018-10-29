@@ -87,7 +87,7 @@ var View = {
                     rects[rowId].push(rect);
                 }
                 $stats.text(
-                    'generating grid ' +
+                    'Generando grilla ' +
                     Math.round((rowId + 1) / numRows * 100) + '%'
                 );
                 done(null);
