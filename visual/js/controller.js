@@ -5,6 +5,8 @@
  * for the document of the StateMachine module.
  */
 var stepNumber = 0;
+var openedList = [];
+var closedList = [];
 var Controller = StateMachine.create({
     initial: 'none',
     events: [
@@ -135,11 +137,9 @@ $.extend(Controller, {
 
         timeStart = window.performance ? performance.now() : Date.now();
         grid = this.grid.clone();
-        console.log("FINDING PATH C=============8")
         this.path = finder.findPath(
             this.startX, this.startY, this.endX, this.endY, grid
         );
-        console.log("PATH FOUND 3=============D")
         this.operationCount = this.operations.length;
         timeEnd = window.performance ? performance.now() : Date.now();
         this.timeSpent = (timeEnd - timeStart).toFixed(4);
@@ -371,17 +371,27 @@ $.extend(Controller, {
                 return;
             }
             op = operations.shift();
-            console.log(op);
-            this.addTableRow(op);
             isSupported = View.supportedOperations.indexOf(op.attr) !== -1;
         } while (!isSupported);
 
         console.log(op);
-
+        if (op.attr == 'opened') {
+            this.addOpened(op);
+        } else if (op.attr == 'closed') {
+            this.addClosed(op);
+        }
+        //this.addTableRow(op);
         View.setAttributeAt(op.x, op.y, op.attr, op.value);
     },
     clearOperations: function () {
         this.operations = [];
+        this.openedList = [];
+        this.closedList = [];
+        stepNumber = 0;
+        var table = document.getElementById("step_table");
+        table.deleteRow(1);
+        table.insertRow(1);
+        this.clearLists();
     },
     clearFootprints: function () {
         View.clearFootprints();
@@ -501,7 +511,7 @@ $.extend(Controller, {
     isStartOrEndPos: function (gridX, gridY) {
         return this.isStartPos(gridX, gridY) || this.isEndPos(gridX, gridY);
     },
-    addTableRow: function (op) {
+    /*addTableRow: function (op) {
         var table = document.getElementById("step_table");
         var row = table.insertRow(-1);
         var cell1 = row.insertCell(0);
@@ -531,12 +541,112 @@ $.extend(Controller, {
                 break;
             }
         }
-    },
+    },*/
     numberToCoord: function (x,y) {
-        if (!x) return "Ø";
+        if (x === undefined || x === null) return "Ø";
         var alph = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P"];
         return `${alph[x]}${y + 1}`;
+    },
+    addOpened: function (op) {
+        var found = false;
+        var i = 0;
+        for(; i < openedList.length; i++) {
+            if (openedList[i].x == op.x && openedList[i].y == op.y) {
+                found = true;
+                break;
+            }
+        }
+        if (found) {openedList[i] = op}
+        openedList.push(op);
+        openedList.sort(function(a, b) {return a.f - b.f});
+        this.printTable();
+    },
+    addClosed: function (op) {
+        var found = false;
+        var i = 0;
+        for(; i < openedList.length; i++) {
+            if (openedList[i].x == op.x && openedList[i].y == op.y) {
+                found = true;
+                break;
+            }
+        }
+        if (found) {openedList.splice(i,1)}
+        closedList.push(op);
+        closedList.sort(function(a, b) {return a.f - b.f});
+        this.printTable();
+    },
+    stringifyOp: function(op) {
+        /*if(op.f){
+            switch (op.attr) {
+                case 'opened':
+                cell2.innerHTML = `${coord} ( ↶ ${coordParent} , ƒ=${op.f.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0]} )`; // printeo abiertos
+                break;
+                case 'closed':
+                cell3.innerHTML = `${coord} ( ↶ ${coordParent} , ƒ=${op.f.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0]} )`; // printeo cerrado
+                break;
+            }
+        } else {
+            switch (op.attr) {
+                case 'opened':
+                cell2.innerHTML = `${coord} ( ↶ ${coordParent} )`; // printeo abiertos
+                break;
+                case 'closed':
+                cell3.innerHTML = `${coord} ( ↶ ${coordParent} )`; // printeo cerrado
+                break;
+            }
+        }*/
+        var coord = this.numberToCoord(op.x,op.y);
+        var coordParent = this.numberToCoord(op.parentX, op.parentY);
+        if(op.f){
+            switch (op.attr) {
+                case 'opened':
+                return `${coord} ( ↶ ${coordParent} , ƒ=${op.f.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0]} )`; // printeo abiertos
+                case 'closed':
+                return `${coord} ( ↶ ${coordParent} , ƒ=${op.f.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0]} )`; // printeo cerrado
+            }
+        } else {
+            switch (op.attr) {
+                case 'opened':
+                return `${coord} ( ↶ ${coordParent} )`; // printeo abiertos
+                case 'closed':
+                return `${coord} ( ↶ ${coordParent} )`; // printeo cerrado
+            }
+        }
+    },
+    printTable: function() {
+        /*var table = document.getElementById("step_table");
+        var row = table.insertRow(-1);
+        var cell1 = row.insertCell(0);
+        var cell2 = row.insertCell(1);
+        var cell3 = row.insertCell(2);
+        cell1.innerHTML =  stepNumber;
+        stepNumber++;*/
+
+        var strOpened = "", strClosed = "";
+        for(var i = 0; i < openedList.length; i++) {
+            strOpened += `${this.stringifyOp(openedList[i])}<br>`
+        }
+        for(var i = 0; i < closedList.length; i++) {
+            strClosed += `${this.stringifyOp(closedList[i])}<br>`
+        }
+        
+        var table = document.getElementById("step_table");
+        table.deleteRow(1);
+        var row = table.insertRow(1);
+        var cell1 = row.insertCell(0);
+        var cell2 = row.insertCell(1);
+        var cell3 = row.insertCell(2);
+        cell1.innerHTML = stepNumber;
+        stepNumber++;
+        cell2.innerHTML = strOpened;
+        cell3.innerHTML = strClosed;
+    },
+    clearLists: function() {
+        openedList = [];
+        closedList = [];
     }
+    
+    // op -> if(op._opened) -> list.find(op) -> list.push(op) -> orderby(f) -> stringify(list) -> append()'s {next line}
 });
 
 
